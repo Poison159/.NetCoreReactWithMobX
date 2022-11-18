@@ -40,14 +40,16 @@ namespace API.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("Regiter")]
+        [HttpPost("Register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto){
             
             if(_userManager.Users.Any(x => x.Email == registerDto.Email)) {
-                return BadRequest("Email taken");
+                ModelState.AddModelError("email", "Email Taken");
+                return ValidationProblem();
             }
             if(_userManager.Users.Any(x => x.UserName == registerDto.Username)) {
-                return BadRequest("Username taken");
+                ModelState.AddModelError("username", "Username Taken");
+                return ValidationProblem();
             }
 
             var user = new AppUser {
